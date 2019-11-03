@@ -4,19 +4,16 @@ class Tree {
         this.level = 0;
         this.parent = null;
     }
-    goThrough(this._root);
-}
 
-_addNode(value, parentValue) {
-    const newNode = {
-        value,
-        children: []
-    };
-
-    if (this._root === null) {
-        this._root = newNode;
-        this._root.level = 0;
-        return;
+    _traverse(callback) {
+        const self = this;
+        function goThrough(node) {
+            callback(node);
+            node.children.forEach((child) => {
+                goThrough(child);
+            });
+        }
+        goThrough(this._root);
     }
 
 
@@ -62,12 +59,20 @@ _addNode(value, parentValue) {
         return returnNode;
     }
 
-    parentNode.children.forEach(child => {
-        leafsRet.push(this._displayLeafs(child));
-    });
+    _displayLeafs(parentValue) {
+        const parentNode = typeof parentValue === 'string' ? this._search(parentValue) : parentValue;
+        let leafsRet = [];
+        if (parentValue.children && !parentValue.children.length) {
+            return parentValue;
+        }
 
-    return leafsRet.flat();
-}
+        parentNode.children.forEach((child) => {
+            leafsRet.push(this._displayLeafs(child));
+        });
+
+        return leafsRet.flat();
+    }
+
 }
 
 class Node {
@@ -80,37 +85,38 @@ class Node {
 const tree = new Tree();
 
 //add nodes to tree
-tree._addNode("Skills");
-tree._addNode("Technology", "Skills");
-tree._addNode("Management", "Skills");
-tree._addNode("Business", "Skills");
-tree._addNode("Health", "Skills");
-tree._addNode("Education", "Skills");
+tree._addNode('Skills');
+tree._addNode('Technology', 'Skills');
+tree._addNode('Management', 'Skills');
+tree._addNode('Business', 'Skills');
+tree._addNode('Health', 'Skills');
+tree._addNode('Education', 'Skills');
 
-tree._addNode("Software Engineering", "Technology");
-tree._addNode("Analyst", "Technology");
-tree._addNode("Product management", "Technology");
-tree._addNode("R&D", "Technology");
+tree._addNode('Software Engineering', 'Technology');
+tree._addNode('Analyst', 'Technology');
+tree._addNode('Product management', 'Technology');
+tree._addNode('R&D', 'Technology');
 
-tree._addNode("Full-stack", "Software Engineering");
-tree._addNode("DevOps", "Software Engineering");
-tree._addNode("Data Science", "Software Engineering");
+tree._addNode('Full-stack', 'Software Engineering');
+tree._addNode('DevOps', 'Software Engineering');
+tree._addNode('Data Science', 'Software Engineering');
 
-tree._addNode("Human Resources", "Management");
-tree._addNode("Communications", "Management");
-tree._addNode("Accounting", "Management");
+tree._addNode('Human Resources', 'Management');
+tree._addNode('Communications', 'Management');
+tree._addNode('Accounting', 'Management');
 
-tree._addNode("Recruiting", "Human Resources");
-tree._addNode("Administration", "Human Resources");
+tree._addNode('Recruiting', 'Human Resources');
+tree._addNode('Administration', 'Human Resources');
 
-tree._addNode("Marketing", "Business");
-tree._addNode("Public Relations", "Business");
+tree._addNode('Marketing', 'Business');
+tree._addNode('Public Relations', 'Business');
 
-tree._addNode("Physiologist", "Health");
-tree._addNode("Emergency", "Health");
-tree._addNode("Nurse", "Health");
+tree._addNode('Physiologist', 'Health');
+tree._addNode('Emergency', 'Health');
+tree._addNode('Nurse', 'Health');
 
-tree._addNode("Professor", "Education");
+tree._addNode('Professor', 'Education');
+
 
 // tree._traverse((node) => {
 //     console.log(node.value);
@@ -261,7 +267,6 @@ function moveLevelUp(deepest) {
             interviewerSkills[x].skill = getParentSkill(interviewerSkills[x].skill);
             if (interviewerSkills[x].level > 1) {
                 interviewerSkills.push(interviewerSkills.splice(x, 1)[0]);
-
             }
         }
     }
