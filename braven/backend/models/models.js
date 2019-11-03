@@ -44,6 +44,7 @@ var eventsSchema = new Schema({
 });
 
 var matchesSchema = new Schema({
+  skill:String,
   eventid: { type: Schema.Types.ObjectId, ref: "events" },
   interviewer: {
     id: { type: Schema.Types.ObjectId, ref: "users" },

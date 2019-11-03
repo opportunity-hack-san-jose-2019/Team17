@@ -26,9 +26,8 @@ var mongoDB =
   "mongodb+srv://canvasUser:189293Kp@canvascluster-wpxt5.mongodb.net/braven?retryWrites=true";
 mongoose.connect(mongoDB, { useNewUrlParser: true });
 
-var { userModel } = require("./models/models");
-var { eventModel } = require("./models/models");
-var { matchModel } = require("./models/models");
+var { userModel,eventModel,matchModel } = require("./models/models");
+
 app.use(fileUpload());
 
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
@@ -66,8 +65,8 @@ app.use(bodyParser.json());
 
 const AWS = require("aws-sdk");
 const s3 = new AWS.S3({
-  accessKeyId: "",
-  secretAccessKey: ""
+  accessKeyId: "AKIA6RTASZU22YVLLIU4",
+  secretAccessKey: "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"
 });
 
 const idMutator = function(result) {
@@ -421,6 +420,168 @@ app.put("/addStudentFeedback", (req, res) => {
   })();
 });
 
+app.post("/addevent", async (req, res) => {
+  try {
+    let { from, to, location, eventName } = req.body;
+    var event = new eventModel({ from, to, location, eventName });
+    let response = await event.save();
+    var body = {
+      message: "Event Added Successfully!",
+      insertStatus: 1,
+      response
+    };
+    res.status(200).json(body);
+  } catch (error) {
+    console.log(error);
+    res.json({
+      status: "error",
+      msg: "Something Went Wrong"
+    });
+    res.end();
+  }
+});
+app.get("/getevents", async (req, res) => {
+  try {
+
+    let response = await eventModel.find();
+    var body = {
+      message: "",
+      status: 1,
+      response
+    };
+    res.status(200).json(body);
+  } catch (error) {
+    console.log(error);
+    res.json({
+      status: "error",
+      msg: "Something Went Wrong"
+    });
+    res.end();
+  }
+});
+app.get("/getinterviewers", async (req, res) => {
+  try {
+
+    let response = await userModel.find({role:"interviewer"});
+    var body = {
+      message: "",
+      status: 1,
+      response
+    };
+    res.status(200).json(body);
+  } catch (error) {
+    console.log(error);
+    res.json({
+      status: "error",
+      msg: "Something Went Wrong"
+    });
+    res.end();
+  }
+});
+app.get("/getstudents", async (req, res) => {
+  try {
+    let response = await userModel.find({role:"student"});
+    var body = {
+      message: "",
+      status: 1,
+      response
+    };
+    res.status(200).json(body);
+  } catch (error) {
+    console.log(error);
+    res.json({
+      status: "error",
+      msg: "Something Went Wrong"
+    });
+    res.end();
+  }
+});
+app.get("/getinterviewsstudent/:id", async (req, res) => {
+  try {
+    let{id}=req.params;
+    let response = await matchModel.find({"student.id":id});
+    var body = {
+      message: "",
+      status: 1,
+      response
+    };
+    res.status(200).json(body);
+  } catch (error) {
+    console.log(error);
+    res.json({
+      status: "error",
+      msg: "Something Went Wrong"
+    });
+    res.end();
+  }
+});
+app.get("/getinterviewsInter/:id", async (req, res) => {
+  try {
+    let{id}=req.params;
+    let response = await matchModel.find({"interviewer.id":id});
+    var body = {
+      message: "",
+      status: 1,
+      response
+    };
+    res.status(200).json(body);
+  } catch (error) {
+    console.log(error);
+    res.json({
+      status: "error",
+      msg: "Something Went Wrong"
+    });
+    res.end();
+  }
+});
+app.post("/addmatches", async (req, res) => {
+  try {
+    // let {matchesArray}=req.body;
+    console.log(req.body);
+    // let match =  new matchModel(req.body);
+    let response = await matchModel.insertMany(req.body);
+
+    
+    var body = {
+      message: "Successfully added matches!",
+      status: 1,
+      response
+    };
+    res.status(200).json(body);
+  } catch (error) {
+    console.log(error);
+    res.json({
+      status: "error",
+      msg: "Something Went Wrong"
+    });
+    res.end();
+  }
+});
+app.post("/editmatches",async(req,res)=>{
+  try{
+  let{matchid,interviewerid,studentid}=req.body;
+  console.log(matchid)
+  console.log(interviewerid)
+  console.log(studentid)
+  let response=await matchModel.updateOne({_id:matchid},{
+    // "interviewer.id":interviewerid,
+    $set: {'interviewer.id': interviewerid,"student.id":studentid}
+  })
+  var body = {
+    message: "",
+    status: 1,
+    response
+  };
+  res.status(200).json(body);
+} catch (error) {
+  console.log(error);
+  res.json({
+    status: "error",
+    msg: "Something Went Wrong"
+  });
+  res.end();
+}
+})
 module.exports = app;
 app.listen(3001, function() {
   console.log("Server Listening on port 3001");
