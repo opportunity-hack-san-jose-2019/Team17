@@ -27,7 +27,8 @@ var mongoDB =
 mongoose.connect(mongoDB, { useNewUrlParser: true });
 
 var { userModel } = require("./models/models");
-
+var { eventModel } = require("./models/models");
+var { matchModel } = require("./models/models");
 app.use(fileUpload());
 
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
@@ -197,11 +198,14 @@ app.post("/signup", async function(req, res) {
 });
 
 app.get("/getprofilebyid/:id", requireAuth, async (req, res) => {
-  let { id } = req.params;
-  console.log(id);
+  console.log("inside get profile");
+  console.log("params ", req.params.id);
+  let uid = req.params.id;
+  console.log(uid);
   (async () => {
     try {
-      let result = await userModel.findById(id);
+      let result = await userModel.findById(uid);
+      console.log(result);
       let copy = idMutator(result);
       res.status(200).json([copy]);
     } catch (error) {
@@ -214,50 +218,70 @@ app.post("/updateprofile", (req, res) => {
   let {
     uid,
     name,
-    phoneNumber,
     profileImage,
-    aboutMe,
+    gender,
+    phoneNumber,
     city,
     country,
     school,
+    aboutMe,
     hometown,
     languages,
-    gender
+    role,
+    university,
+    skills,
+    employer,
+    title,
+    industry
   } = req.body;
   console.log("body is :");
   console.log(req.body);
   //  console.log(uid);
+
+  //check for file data passed
+  var files =
+    req.files == null || req.files == undefined ? "" : req.files.file.data;
+
   console.log("files is :");
-  console.log(req.files.file);
+  console.log(files);
 
   (async () => {
     try {
       // var base64data = new Buffer(req.files.file.data, 'binary');
       // console.log(base64data);
+
       const params = {
         Bucket: "braven",
         Key: uid,
-        Body: req.files.file.data
+        Body: files
       };
+
       //  s3.upload(params,function(err,data){
       //      console.log(data)
       //  });
+
       console.log(params);
       let ress = await awsupload(params);
       console.log(ress);
 
-      //profileImage: req.files.file.data,
+      // profileImage: req.files.file.data,
       var post = {
-        profileImage: ress.Location,
         name,
+        profileImage,
+        gender,
         phoneNumber,
-        aboutMe,
         city,
         country,
         school,
+        aboutMe,
         hometown,
         languages,
-        gender
+        role,
+        university,
+        skills,
+        employer,
+        title,
+        industry
       };
       //    let sql=`UPDATE Users SET name=${name}, profileImage=${req.files.file.data} WHERE uid=${uid}`;
       //    console.log(sql);
@@ -270,6 +294,127 @@ app.post("/updateprofile", (req, res) => {
       res.status = 200;
       res.setHeader("Content-Type", "application/json");
       res.send(JSON.stringify({ message: "Profile Updated !" }));
+    } catch (error) {
+      console.log(error);
+    }
+  })();
+});
+app.put("/editevent", (req, res) => {
+  let { uid, eventName, location, from, to, interviewers, students } = req.body;
+  (async () => {
+    try {
+      var put = { eventName, location, from, to, interviewers, students };
+      //    let sql=`UPDATE Users SET name=${name}, profileImage=${req.files.file.data} WHERE uid=${uid}`;
+      //    console.log(sql);
+      let result = await eventModel.findOneAndUpdate(
+        { _id: uid },
+        { $set: { ...put } }
+      );
+      res.status = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.send(JSON.stringify({ message: "Event Updated !" }));
+    } catch (error) {
+      console.log(error);
+    }
+  })();
+});
+
+app.put("/editmatch", (req, res) => {
+  let { uid, skill, location, to, interviewer, student } = req.body;
+  (async () => {
+    try {
+      var put = { skill, location, interviewer, student };
+      //    let sql=`UPDATE Users SET name=${name}, profileImage=${req.files.file.data} WHERE uid=${uid}`;
+      //    console.log(sql);
+      let result = await matchModel.findOneAndUpdate(
+        { _id: uid },
+        { $set: { ...put } }
+      );
+      res.status = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.send(JSON.stringify({ message: "Match Updated !" }));
+    } catch (error) {
+      console.log(error);
+    }
+  })();
+});
+
+app.put("/addInterviewerToEvent", (req, res) => {
+  let { uid, interviewerid, skill } = req.body;
+  (async () => {
+    try {
+      var put = { _id: interviewerid, skill: skill };
+      //    let sql=`UPDATE Users SET name=${name}, profileImage=${req.files.file.data} WHERE uid=${uid}`;
+      //    console.log(sql);
+      let result = await eventModel.findOneAndUpdate(
+        { eventid: uid },
+        { $push: { interviewer: put } }
+      );
+      res.status = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.send(JSON.stringify({ message: "Interviewer added to the Event!" }));
+    } catch (error) {
+      console.log(error);
+    }
+  })();
+});
+
+app.put("/addStudentToEvent", (req, res) => {
+  let { uid, studentid, skill } = req.body;
+  (async () => {
+    try {
+      var put = { _id: studentid, skill: skill };
+      //    let sql=`UPDATE Users SET name=${name}, profileImage=${req.files.file.data} WHERE uid=${uid}`;
+      //    console.log(sql);
+      let result = await eventModel.findOneAndUpdate(
+        { eventid: uid },
+        { $push: { student: put } }
+      );
+      res.status = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.send(JSON.stringify({ message: "Student added to the Event!" }));
+    } catch (error) {
+      console.log(error);
+    }
+  })();
+});
+
+app.put("/addInterviewerFeedback", (req, res) => {
+  let { matchid, feedback } = req.body;
+  (async () => {
+    try {
+      //    let sql=`UPDATE Users SET name=${name}, profileImage=${req.files.file.data} WHERE uid=${uid}`;
+      //    console.log(sql);
+      let response = await matchModel.updateOne(
+        { _id: matchid },
+        {
+          $set: { "interviewer.feedback": feedback }
+        }
+      );
+      res.status = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.send(JSON.stringify({ message: "Interviewer feedback delivered!" }));
+    } catch (error) {
+      console.log(error);
+    }
+  })();
+});
+
+app.put("/addStudentFeedback", (req, res) => {
+  let { matchid, feedback } = req.body;
+  (async () => {
+    try {
+      //    let sql=`UPDATE Users SET name=${name}, profileImage=${req.files.file.data} WHERE uid=${uid}`;
+      //    console.log(sql);
+      let response = await matchModel.updateOne(
+        { _id: matchid },
+        {
+          $set: { "student.feedback": feedback }
+        }
+      );
+      res.status = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.send(JSON.stringify({ message: "Student feedback delivered!" }));
     } catch (error) {
       console.log(error);
     }

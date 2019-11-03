@@ -57,9 +57,9 @@ var matchesSchema = new Schema({
   }
 });
 
-var skillSchema=new Schema({
-  skillsArray:[{}]
-})
+var skillSchema = new Schema({
+  skillsArray: [{}]
+});
 
 var userModel = mongoose.model("users", userSchema);
 var eventModel = mongoose.model("events", eventsSchema);
