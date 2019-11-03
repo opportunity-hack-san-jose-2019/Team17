@@ -4,17 +4,6 @@ var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
 var userSchema = new Schema({
-  chats: [
-    {
-      uid: { type: Schema.Types.ObjectId, ref: "users" },
-      messages: [
-        {
-          action: String,
-          messagetext: String
-        }
-      ]
-    }
-  ],
   email: String,
   password: String,
   name: String,
@@ -28,109 +17,57 @@ var userSchema = new Schema({
   hometown: String,
   languages: String,
   role: String,
-  courses: [{ type: Schema.Types.ObjectId, ref: "courses" }],
-  waitlistcourses: [{ type: Schema.Types.ObjectId, ref: "courses" }]
+  university: String,
+  skills: String,
+  employer: String,
+  title: String,
+  industry: String
 });
 
-var courseSchema = new Schema({
-  courseId: Number,
-  courseTerm: String,
-  courseDepartment: String,
-  courseName: String,
-  courseDescription: String,
-  courseRoom: String,
-  courseCapacity: Number,
-  waitlistCapacity: Number,
-  currEnrollment: Number,
-  currWaitlist: Number,
-  uid: { type: Schema.Types.ObjectId, ref: "users" },
-  lecturefiles: [
+var eventsSchema = new Schema({
+  eventName: String,
+  from: Date,
+  to: Date,
+  interviewers: [
     {
-      file: String,
-      filename: String,
-      posted: Date
+      uid: { type: Schema.Types.ObjectId, ref: "users" },
+      skill: String
     }
   ],
-  permissioncode: [
+  students: [
     {
-      code: String,
-      used: Number,
-      uid: { type: Schema.Types.ObjectId, ref: "users" }
-    }
-  ],
-  announcement: [
-    {
-      header: String,
-      bodyText: String,
-      plainText: String,
-      posted: Date
-    }
-  ],
-  assignments: [
-    {
-      header: String,
-      bodyText: String,
-      plainText: String,
-      posted: Date,
-      due: Date,
-      available: Date,
-      points: Number,
-      submission: [
-        {
-          uid: { type: Schema.Types.ObjectId, ref: "users" },
-          grades: Number,
-          submissionfile: [
-            {
-              file: String,
-              filename: String
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  quiz: [
-    {
-      heading: String,
-      description: String,
-      posted: Date,
-      due: Date,
-      availablefrom: Date,
-      availableto: Date,
-      timelimit: Number,
-      published: Number,
-      points: Number,
-      questions: [
-        {
-          question: String,
-          answer: String,
-          options: [
-            {
-              type: String
-            }
-          ]
-        }
-      ],
-      quizsubmission: [
-        {
-          uid: { type: Schema.Types.ObjectId, ref: "users" },
-          answers: [
-            {
-              questionId: Schema.Types.ObjectId,
-              answer: String
-            }
-          ],
-          grades: Number
-        }
-      ]
+      uid: { type: Schema.Types.ObjectId, ref: "users" },
+      skill: String
     }
   ]
 });
 
+var matchesSchema = new Schema({
+  eventid: { type: Schema.Types.ObjectId, ref: "events" },
+  interviewer: {
+    id: { type: Schema.Types.ObjectId, ref: "users" },
+    feedback: String,
+    comment: String
+  },
+  student: {
+    id: { type: Schema.Types.ObjectId, ref: "users" },
+    feedback: String,
+    comment: String
+  }
+});
+
+var skillSchema=new Schema({
+  skillsArray:[{}]
+})
+
 var userModel = mongoose.model("users", userSchema);
-var courseModel = mongoose.model("courses", courseSchema);
+var eventModel = mongoose.model("events", eventsSchema);
+var matchModel = mongoose.model("matches", matchesSchema);
+var skillModel = mongoose.model("skills", skillSchema);
 
 module.exports = {
   userModel,
-  courseModel
+  eventModel,
+  matchModel,
+  skillModel
 };
