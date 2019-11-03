@@ -28,6 +28,7 @@ var eventsSchema = new Schema({
   eventName: String,
   from: Date,
   to: Date,
+  location: String,
   interviewers: [
     {
       uid: { type: Schema.Types.ObjectId, ref: "users" },
@@ -56,9 +57,9 @@ var matchesSchema = new Schema({
   }
 });
 
-var skillSchema=new Schema({
-  skillsArray:[{}]
-})
+var skillSchema = new Schema({
+  skillsArray: [{}]
+});
 
 var userModel = mongoose.model("users", userSchema);
 var eventModel = mongoose.model("events", eventsSchema);
