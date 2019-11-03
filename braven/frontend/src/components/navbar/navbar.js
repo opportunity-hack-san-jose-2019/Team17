@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import cookie from "react-cookies";
 import { rootUrl } from "../helpers/urlhelper";
 import { Redirect } from "react-router";
-import img from "../images/sjsugold.png";
+import img from "../images/braven-logo.png";
 import SVG from "react-inlinesvg";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -16,6 +16,7 @@ import dashboardsvg from "../images/dashboard.svg";
 // import profileSVG from "../images/dashboard.svg"
 import coursesSVG from "../images/courses.svg";
 import groupsSVG from "../images/inbox.svg";
+import "./navbar.css";
 
 class Navbar extends Component {
   constructor(props) {
@@ -107,7 +108,7 @@ class Navbar extends Component {
               <Link to="/profile">
                 <img
                   src={
-                    this.props.navbar.file ? this.props.navbar.file : stockimg
+                    this.props.profile.file ? this.props.profile.file : stockimg
                   }
                 ></img>
                 Account

@@ -3,8 +3,8 @@ import axios from "axios";
 import {rootUrl} from "../helpers/urlhelper";
 import {Redirect} from "react-router";
 import cookie from "react-cookies";
-import img from "../images/sjsuhead.png";
-import img2 from "../images/sjsuheader.png";
+import img from "../images/braven-logo.png";
+import img2 from "../images/braven-logo.png";
 import {Link} from 'react-router-dom';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -77,17 +77,17 @@ class Signup extends Component {
       redirectVar=<Redirect to="/home"/>
   }
       return(<div>
-          <header className="login-header"><span>Connecting to</span><span><img src={img}></img></span>
-        <p>Sign-in with your San Jose State University account to access SJSU Single Sign-on</p>
+          <header className="login-header"><span>Braven</span><span><img src={img}></img></span>
+        {/* <p>Sign-in with your San Jose State University account to access SJSU Single Sign-on</p> */}
         </header>
         <div>{redirectVar}</div>
         <form className="login-form" onSubmit={this.signup}>
-        <div className="img-parent"><img src={img2}></img></div>
+        <div className="img-parent"> <img src={img2}></img><div>Braven</div></div>
         <p>Sign Up</p>
         <div className="input-parent">
        <div> <input required onChange={this.changeHandlerName} type="text" placeholder="Name"></input></div>
        <div className="radio-parent"><input type="radio" onChange={this.changeHandlerRadio} checked={this.state.role==="student"} name="role"  value="student"></input><label>Student</label></div>
-       <div className="radio-parent"><input type="radio" onChange={this.changeHandlerRadio} checked={this.state.role==="faculty"} name="role" value="faculty"></input><label>Faculty</label></div>
+       <div className="radio-parent"><input type="radio" onChange={this.changeHandlerRadio} checked={this.state.role==="interviewer"} name="role" value="interviewer"></input><label>Interviewer</label></div>
        <div> <input required title="Please enter an email address of the form xyz@sjsu.edu"  type="email" pattern=".+@sjsu.edu" onChange={this.changeHandlerEmail}  placeholder="Email"></input></div>
        <div><input required onChange={this.changeHandlerPassword} type="password" placeholder="Password"></input></div>
         <input className="btn" type="submit" value="Sign Up"></input>
