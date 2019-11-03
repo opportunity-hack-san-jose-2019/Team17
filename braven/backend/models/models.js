@@ -28,7 +28,6 @@ var eventsSchema = new Schema({
   eventName: String,
   from: Date,
   to: Date,
-  location: String,
   interviewers: [
     {
       uid: { type: Schema.Types.ObjectId, ref: "users" },
