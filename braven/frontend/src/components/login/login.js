@@ -3,8 +3,8 @@ import axios from "axios";
 import { rootUrl } from "../helpers/urlhelper";
 import { Redirect } from "react-router";
 import cookie from "react-cookies";
-import img from "../images/sjsuhead.png";
-import img2 from "../images/sjsuheader.png";
+import img from "../images/braven-logo.png";
+import img2 from "../images/braven-logo.png";
 import { Link } from "react-router-dom";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -52,20 +52,13 @@ class Login extends Component {
     }
     return (
       <div>
-        <header className="login-header">
-          <span>Connecting to</span>
-          <span>
-            <img src={img}></img>
-          </span>
-          <p>
-            Sign-in with your San Jose State University account to access SJSU
-            Single Sign-on
-          </p>
+       <header className="login-header"><span>Braven</span><span><img src={img}></img></span>
+        {/* <p>Sign-in with your San Jose State University account to access SJSU Single Sign-on</p> */}
         </header>
         <div>{redirectVar}</div>
         <form className="login-form" onSubmit={this.login}>
           <div className="img-parent">
-            <img src={img2}></img>
+            <img src={img2}></img><div>Braven</div>
           </div>
           <p>Sign In</p>
           <div className="input-parent">
