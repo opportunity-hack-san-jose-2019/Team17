@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "array-move": "^2.1.0",
-    "axios": "^0.18.1",
+    "axios": "^0.21.1",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.11.2",
     "jest": "^24.5.0",
